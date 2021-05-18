@@ -1,5 +1,5 @@
 const app = require("./app");
-const { PORT = 4000 } = process.env;
+const PORT = 4000;
 const dbSetup = require("./database/setup");
 
 dbSetup(); // setup mongoose and connect app to database
