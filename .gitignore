@@ -1,2 +1,2 @@
 node_modules
-events/events.service
+src/events/events.service.js
