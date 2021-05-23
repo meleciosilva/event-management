@@ -4,17 +4,17 @@ const jwt = require("jsonwebtoken");
 const secret = "suPErSecuRESEcrEt"
 const expiry = 3600;
 
-exports.registerNewUser = (req, res, next) => {
+const registerNewUser = (req, res, next) => {
   // fetch user's details from request body
-  const { firstName, lastName, username, password } = req.body;
+  const { firstName, lastName, email, password } = req.body;
   
-  User.findOne({username: req.body.username}, (err, existingUser) => {
+  User.findOne({email: req.body.email}, (err, existingUser) => {
     if (err) return next(err);
-    // check if user with this username exists
-    if (existingUser) return res.json({ message: `User '${existingUser.username}' already exists`});
+    // check if user with this email exists
+    if (existingUser) return res.json({ message: `User '${existingUser.email}' already exists`});
 
     // create a new user“
-    User.create({firstName, lastName, username }, (err, newUser) => {
+    User.create({firstName, lastName, email }, (err, newUser) => {
       if (err) return next(err);
     
     // hash password
@@ -29,7 +29,7 @@ exports.registerNewUser = (req, res, next) => {
           // create jwt for user
           jwt.sign({
             id: newUser._id,
-            username: newUser.username,
+            email: newUser.email,
             firstName: newUser.firstName,
             lastName: newUser.lastName
           }, secret, {expiresIn: expiry}, (err, token) => {
@@ -45,11 +45,11 @@ exports.registerNewUser = (req, res, next) => {
   })
 }
 
-exports.logInUser = (req, res, next) => {
+const logInUser = (req, res, next) => {
   // check if user exists
-  User.findOne({username: req.body.username}, (err, foundUser) => {
+  User.findOne({email: req.body.email}, (err, foundUser) => {
     if (err) return next(err);
-    if (!foundUser) return next({ status: 401, message: `Username '${req.body.username}' does not exist` });
+    if (!foundUser) return next({ status: 401, message: `Email'${req.body.email}' does not exist` });
     
     // check if password is correct
     bcrypt.compare(req.body.password, foundUser.password, (err, isMatch) => {
@@ -59,7 +59,7 @@ exports.logInUser = (req, res, next) => {
       // create a token
       jwt.sign({
         id: foundUser._id,
-        username: foundUser.username,
+        email: foundUser.email,
         firstName: foundUser.firstName,
         lastName: foundUser.lastName,
       }, secret, { expiresIn: expiry }, (err, token) => {
@@ -72,7 +72,18 @@ exports.logInUser = (req, res, next) => {
   });
 }
 
-// module.exports = {
-//   registerNewUser,
-//   logInUser
-// }
+const deleteUser = (req, res, next) => {
+  const { email } = req.body;
+  User.findOneAndDelete({email: email}, (err, foundUser) => {
+    if (err) return next(err);
+    if (!foundUser) return next({ status: 401, message: `Email '${email}' not found` });
+    res.json({ message: `User '${foundUser.firstName} ${foundUser.lastName}' was successfully deleted` });
+  });
+}
+
+
+module.exports = {
+  registerNewUser,
+  logInUser,
+  deleteUser
+}
