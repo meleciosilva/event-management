@@ -49,7 +49,7 @@ exports.logInUser = (req, res, next) => {
   // check if user exists
   User.findOne({username: req.body.username}, (err, foundUser) => {
     if (err) return next(err);
-    if (!foundUser) return next({ status: 401, message: `Username ${req.body.username} does not exist` });
+    if (!foundUser) return next({ status: 401, message: `Username '${req.body.username}' does not exist` });
     
     // check if password is correct
     bcrypt.compare(req.body.password, foundUser.password, (err, isMatch) => {
