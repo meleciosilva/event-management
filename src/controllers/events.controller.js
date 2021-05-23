@@ -1,4 +1,4 @@
-const Event = require("./events.model");
+const Event = require("./../models/events.model");
 
 function create(req, res, next) {
   Event.create({ ...req.body.data }, (err, newEvent) => {
