@@ -12,4 +12,9 @@ router
   .post(controller.logInUser)
   .all(methodNotAllowed);
 
+router
+  .route("/delete")
+  .delete(controller.deleteUser)
+  .all(methodNotAllowed);
+
 module.exports = router;
