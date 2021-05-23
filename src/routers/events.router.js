@@ -1,6 +1,6 @@
 const router = require("express").Router();
-const controller = require("./events.controller");
-const methodNotAllowed = require("./../errors/methodNotAllowed");
+const controller = require("./../controllers/events.controller");
+const methodNotAllowed = require("../errors/methodNotAllowed");
 
 router
   .route("/:eventId")
