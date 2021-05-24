@@ -1,6 +1,7 @@
 const Event = require("./../models/events.model");
 
 function create(req, res, next) {
+  if (!req.body.data) return next({ status: 401, message: "Request must have 'data' property. Try Again." })
   Event.create({ ...req.body.data }, (err, newEvent) => {
     if (err) return next(err);
     res.status(201).json({ message: "new event created", newEvent })
@@ -31,6 +32,7 @@ function read(req, res, next) {
 }
 
 function update(req, res, next) {
+  if (!req.body.data) return next({ status: 401, message: "Request must have 'data' property. Try Again." })
   Event.findByIdAndUpdate(req.params.eventId, { ...req.body.data }, (err, event) => {
     if (!event) return next({
       status: 404,
@@ -42,7 +44,7 @@ function update(req, res, next) {
         status: 400,
         message: err
       });
-      res.json({ message: "Event successfaully updated" });
+      res.json({ message: "Event successfaully updated", updatedEvent: {...req.body.data} });
     });
   });
 }
