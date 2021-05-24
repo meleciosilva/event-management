@@ -1,18 +1,19 @@
 const router = require("express").Router();
 const controller = require("./../controllers/events.controller");
 const methodNotAllowed = require("../errors/methodNotAllowed");
+const { authenticateUser, checkIfAdmin } = require("./../middleware/authenticate");
 
 router
   .route("/:eventId")
-  .get(controller.read)
-  .put(controller.update)
-  .delete(controller.destroy)
+  .get(authenticateUser, controller.read)
+  .put(authenticateUser, checkIfAdmin, controller.update)
+  .delete(authenticateUser, checkIfAdmin, controller.destroy)
   .all(methodNotAllowed);
 
 router 
   .route("/")
-  .post(controller.create)
-  .get(controller.list)
+  .post(authenticateUser, controller.create)
+  .get(authenticateUser, controller.list)
   .all(methodNotAllowed);
 
 module.exports = router;
