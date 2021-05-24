@@ -31,7 +31,8 @@ const registerNewUser = (req, res, next) => {
             id: newUser._id,
             email: newUser.email,
             firstName: newUser.firstName,
-            lastName: newUser.lastName
+            lastName: newUser.lastName,
+            role: newUser.role
           }, secret, {expiresIn: expiry}, (err, token) => {
               if (err) return next(err);
               // send jwt to user
@@ -62,6 +63,7 @@ const logInUser = (req, res, next) => {
         email: foundUser.email,
         firstName: foundUser.firstName,
         lastName: foundUser.lastName,
+        role: foundUser.role
       }, secret, { expiresIn: expiry }, (err, token) => {
         if (err) return next(err);
           // send token to user
@@ -74,7 +76,7 @@ const logInUser = (req, res, next) => {
 
 const deleteUser = (req, res, next) => {
   const { email } = req.body;
-  User.findOneAndDelete({email: email}, (err, foundUser) => {
+  User.findOneAndDelete({email}, (err, foundUser) => {
     if (err) return next(err);
     if (!foundUser) return next({ status: 401, message: `Email '${email}' not found` });
     res.json({ message: `User '${foundUser.firstName} ${foundUser.lastName}' was successfully deleted` });
