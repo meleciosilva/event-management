@@ -21,7 +21,7 @@ const authenticateUser = (req, res, next) => {
 }
 
 const checkIfAdmin = (req, res, next) => {
-  if (!req.user.role || req.user.role !== 'admin') return next({ status: 401, message: 'This route is restricted to admin users' })
+  if (req.user.role !== 'admin') return next({ status: 401, message: 'This route is restricted to admin users' })
   next();
 } 
 
