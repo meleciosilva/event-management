@@ -1,11 +1,18 @@
 const Event = require("./../models/events.model");
+const axios = require("axios");
 
 function create(req, res, next) {
-  if (!req.body.data) return next({ status: 401, message: "Request must have 'data' property. Try Again." })
-  Event.create({ ...req.body.data }, (err, newEvent) => {
-    if (err) return next(err);
-    res.status(201).json({ message: "new event created", newEvent })
-  });
+  if (!req.body.data) return next({ status: 401, message: "Request must have 'data' property. Try Again." });
+  const url = `https://imagegen.herokuapp.com/?category=${req.body.data.category}`;
+
+  return axios.get(url)
+    .then(result => result.data.image)
+    .then(image => Event.create({ ...req.body.data, image }))
+    .then(newEvent => res.status(201).json({ message: "New Event Created!", newEvent }))
+    .catch(err => {
+      console.log(err);
+      return next({ status: 500, message: err.message });
+    });
 }
 
 function list(req, res, next) {
