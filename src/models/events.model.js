@@ -19,6 +19,9 @@ const EventSchema = new mongoose.Schema({
     type: Number,
     min: 1
   },
+  image: {
+    type: String,
+  },
 });
 
 const Event = mongoose.model("Event", EventSchema);
